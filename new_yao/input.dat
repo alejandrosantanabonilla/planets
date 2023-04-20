@@ -1,0 +1,4 @@
+startstep=1
+maxstep=20
+popsize=10
+command=mpirun -np 64 /users/k1898908/bin/vasp-create/vasp_std
