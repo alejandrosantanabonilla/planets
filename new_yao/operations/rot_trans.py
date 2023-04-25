@@ -113,5 +113,5 @@ if __name__ == "__main__":
    initial = combine_substrate_cluster(new_subs, clusters)
    view(initial)
    
-   final=combine_substrate_cluster(substrate, rot_clusters)
+   final=combine_substrate_cluster(new_subs, rot_clusters)
    view(final)
