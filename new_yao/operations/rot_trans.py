@@ -101,12 +101,16 @@ if __name__ == "__main__":
  
    #clusters.set_constraint(FixAtoms(mask=[False]*len(clusters)))
    substrate = read('substrate.poscar', format='vasp')
+   new_subs=substrate.copy()
+
+   if not new_subs.constraints:
+        new_subs.set_constraint(True)
 
    # Update the positions of all atoms in the Atoms object to the rotated coordinates plus the translation vector
-   rot_clusters.positions = cluster_dis_xyz(x_direct, y_direct, angle_x, angle_y, angle_z, clusters, substrate)
+   rot_clusters.positions = cluster_dis_xyz(x_direct, y_direct, angle_x, angle_y, angle_z, clusters, new_subs)
 
    # Using ASE simple viewer
-   initial = combine_substrate_cluster(substrate, clusters)
+   initial = combine_substrate_cluster(new_subs, clusters)
    view(initial)
    
    final=combine_substrate_cluster(substrate, rot_clusters)
