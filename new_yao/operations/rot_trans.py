@@ -85,6 +85,28 @@ def combine_substrate_cluster(substrate, rot_cluster):
 
     return combined_atoms
 
+def structure_creator(cluster_file, substrate_file, output_name, x_direct, y_direct, angle_x, angle_y, angle_z):
+   """ Function to create new structures based on user-defined
+        parameters
+   """
+
+   # Read the cluster.POSCAR file and convert to Cartesian with selective dynamics style
+   clusters = read(str(cluster_file), format='vasp')
+   rot_clusters = clusters.copy()
+ 
+   #clusters.set_constraint(FixAtoms(mask=[False]*len(clusters)))
+   substrate = read(str(substrate_file), format='vasp')
+   new_subs=substrate.copy()
+   
+   if not new_subs.constraints:
+      new_subs.set_constraint(True)
+      
+   # Update the positions of all atoms in the Atoms object to the rotated coordinates plus the translation vector
+   rot_clusters.positions = cluster_dis_xyz(x_direct, y_direct, angle_x, angle_y, angle_z, clusters, substrate)
+
+   final=combine_substrate_cluster(new_subs, rot_clusters)
+    
+   write(str(output_name), final, vasp5=True, direct=False, sort=False, long_format=True, symbol_count=None)
 
 if __name__ == "__main__":
    # Define Variables for rotation
@@ -94,24 +116,7 @@ if __name__ == "__main__":
    angle_x = np.pi/2
    angle_y = 0
    angle_z = 0
-   
-   # Read the cluster.POSCAR file and convert to Cartesian with selective dynamics style
-   clusters = read('cluster.poscar', format='vasp')
-   rot_clusters = clusters.copy()
- 
-   #clusters.set_constraint(FixAtoms(mask=[False]*len(clusters)))
-   substrate = read('substrate.poscar', format='vasp')
-   new_subs=substrate.copy()
 
-   if not new_subs.constraints:
-        new_subs.set_constraint(True)
-
-   # Update the positions of all atoms in the Atoms object to the rotated coordinates plus the translation vector
-   rot_clusters.positions = cluster_dis_xyz(x_direct, y_direct, angle_x, angle_y, angle_z, clusters, new_subs)
-
-   # Using ASE simple viewer
-   initial = combine_substrate_cluster(new_subs, clusters)
-   view(initial)
-   
-   final=combine_substrate_cluster(new_subs, rot_clusters)
+   structure_creator("cluster.poscar", "substrate.poscar","combined.poscar", x_direct, y_direct, angle_x, angle_y, angle_z)
+   final=read("combined.poscar", format='vasp')
    view(final)
