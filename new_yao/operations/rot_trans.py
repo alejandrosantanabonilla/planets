@@ -4,6 +4,7 @@ from ase.constraints import FixAtoms
 from ase import Atoms
 from ase.geometry import cell_to_cellpar
 from ase.visualize import view
+import re
 
 # Calculate the cluster rotation matrix
 def cluster_rotation_matrix(angle_x, angle_y, angle_z, clusters):
@@ -108,6 +109,17 @@ def structure_creator(cluster_file, substrate_file, output_name, x_direct, y_dir
     
    write(str(output_name), final, vasp5=True, direct=False, sort=False, long_format=True, symbol_count=None)
 
+def read_energy(filename):
+   e0_pattern = re.compile(r"energy\(sigma->0\)\s*=\s+([\d\-\.]+)")
+   textfile = open(filename, 'r')
+   filetext = textfile.read()
+   textfile.close()
+   matches = re.findall(e0_pattern, filetext)
+
+   return matches
+
+all_energies=read_energy('OUTCAR')
+
 if __name__ == "__main__":
    # Define Variables for rotation
    x_direct = 0.6
@@ -120,3 +132,7 @@ if __name__ == "__main__":
    structure_creator("cluster.poscar", "substrate.poscar","combined.poscar", x_direct, y_direct, angle_x, angle_y, angle_z)
    final=read("combined.poscar", format='vasp')
    view(final)
+
+   # Reading an OUTCAR and getting the last energy
+   all_energies=read_energy('OUTCAR')
+   print (all_energies[-1])
