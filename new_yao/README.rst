@@ -33,6 +33,17 @@ This will produce the following set of folders:
    │   ├── config_1
    │   │   ├── combined_1.poscar
    │   │   └── OUTCAR
+            .
+            .
+            .
+            .
+   └── pop_res.json
+   ├── gen_2
+            .
+            .
+            .
+    ├── gen_9
+   
 
 
 
