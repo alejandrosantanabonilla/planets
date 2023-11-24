@@ -97,5 +97,9 @@ This tutorial provides a basic implementation of PSO in Python. For more advance
 various extensions and modifications of the algorithm in terms of new inertia functions, velocity clamping 
 among others.
 
+**Next steps:**
+
+# Step 1
+# Step 2
 
 
