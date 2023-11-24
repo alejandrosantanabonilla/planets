@@ -99,8 +99,13 @@ among others.
 
 **Next steps:**
 
-* Item 1 blala
+* **Item 1.** Reading different methods to explore the configurational space based on the shared literature.
                  
-* Item 2. blala
+* **Item 2.** Selecting some of the searching methods and implement the corresponding changes in the pso_code.py file.
+
+* **Item 3.** Based on this code, investigate the following concepts:
+
+   #. Q.1. Premature convergence 
+
 
 
