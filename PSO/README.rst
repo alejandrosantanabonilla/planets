@@ -105,8 +105,10 @@ among others.
 
 * **Item 3.** Based on this code, investigate the following concepts:
 
-   #. Q.1. Premature convergence 
-   #. Q.2. This
+   #. Q.1. What is Premature convergence? how can this be observed using the code? 
+   #. Q.2. Trade off between exploration and explotation. How is this related to change specific variables in the algorithm ?
+   #. Q.3. Perform a systematic study of the impact of changing different parameters in the convergence of the algorithm.
+   #. Q.4. How can be establish a convergence criteria? 
 
 * **Item 4.** Include these results in the corresponding report. 
 
