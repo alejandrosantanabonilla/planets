@@ -27,10 +27,10 @@ Before proceeding with the tutorial, ensure that you have installed the necessar
 
 Before proceeding with this tutorial, ensure that you have installed the necessary libraries, including NumPy and JSON. You can install these libraries using the following commands:
 
-```bash
-pip install numpy
-pip install json
+.. code-block:: bash
 
+   $ pip install numpy
+   $ pip install json
 
 **Note:** Make sure you have pip installed on your system. If not, you can install it using the following command:
 
