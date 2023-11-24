@@ -17,7 +17,6 @@ This tutorial will provide a step-by-step guide on how to use the PSO implementa
 Before proceeding with the tutorial, ensure that you have installed the necessary libraries, including:
 
 * NumPy
-* Pandas
 * Matplotlib
 * tqdm
 * json
@@ -29,13 +28,17 @@ Before proceeding with this tutorial, ensure that you have installed the necessa
 
 .. code-block:: bash
 
-   $ pip install numpy
-   $ pip install json
+   pip install numpy
+   pip install json   
+   pip install matplotlib
+   pip install json
+   pip install Pillow
 
 **Note:** Make sure you have pip installed on your system. If not, you can install it using the following command:
 
-bash
-curl [https://bootstrap.pypa.io/get-pip.py](https://bootstrap.pypa.io/get-pip.py) | python
+.. code-block:: bash
+   sudo apt update
+   sudo apt install python3-pip
 
 
 **Conclusion**
