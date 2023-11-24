@@ -106,6 +106,7 @@ among others.
 * **Item 3.** Based on this code, investigate the following concepts:
 
    #. Q.1. Premature convergence 
+   #. Q.2. This
 
 
 
