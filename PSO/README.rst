@@ -53,7 +53,7 @@ this command:
 
 after running this command, 2 folders (temp_json, temp_png) are going to be created. You can open the *.json* file with any
 text editor (emacs, nano, vim, etc) and see the positions and velocities of the particles per each iteration. The **PSO.gif**
-file contains a small animation showing the best position (gbest) found by the algorithm at that iteration. Values will be
+file contains a small animation showing the best position (gbest) found by the algorithm at each iteration. Values will be
 printed in the screen. The animation can be seen by using the following command:
 
 .. code-block:: bash
