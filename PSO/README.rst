@@ -44,7 +44,14 @@ To insall libraries such as NumPy, JSON, tqdm, and PIL please use the following 
 
 **Example:**
 
-An example can be run directly after the code has been downloaded and libraries have been installed. 
+An example can be run directly after the code has been downloaded and libraries have been installed. This is done using
+this command:
+
+.. code-block:: bash
+
+  python pso_function.py
+
+
 
 
 **Conclusion**
