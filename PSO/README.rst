@@ -42,16 +42,18 @@ To insall libraries such as NumPy, JSON, tqdm, and PIL please use the following 
    sudo apt update
    sudo apt install python3-pip
 
-**Example:**
+**How to run:**
 
 An example can be run directly after the code has been downloaded and libraries have been installed. This is done using
 this command:
 
 .. code-block:: bash
 
-  python pso_function.py
+  python pso_code.py
 
+**What to change:**
 
+Within the line of code :bash:`a = b + c`.
 
 
 **Conclusion**
