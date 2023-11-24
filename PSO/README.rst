@@ -18,5 +18,29 @@ Before proceeding with the tutorial, ensure that you have installed the necessar
 
 * NumPy
 * Pandas
+* Matplotlib
+* tqdm
+* json
+* PIL
 
-**Step-by-step Guide**
+**Installing Dependencies**
+
+Before proceeding with this tutorial, ensure that you have installed the necessary libraries, including NumPy and JSON. You can install these libraries using the following commands:
+
+```bash
+pip install numpy
+pip install json
+
+
+**Note:** Make sure you have pip installed on your system. If not, you can install it using the following command:
+
+bash
+curl [https://bootstrap.pypa.io/get-pip.py](https://bootstrap.pypa.io/get-pip.py) | python
+
+
+**Conclusion**
+
+This tutorial provides a basic implementation of PSO in Python. For more advanced applications, you can explore various extensions and modifications of the algorithm.
+
+
+
