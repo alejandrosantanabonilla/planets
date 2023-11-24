@@ -12,7 +12,7 @@ This tutorial will provide a step-by-step guide on how to use the PSO implementa
 * Basic understanding of Python programming
 * Familiarity with optimization algorithms
 
-**Installation**
+**Installation Process:**
 
 Before proceeding with the tutorial, ensure that you have installed the necessary libraries, including:
 
@@ -22,9 +22,9 @@ Before proceeding with the tutorial, ensure that you have installed the necessar
 * json
 * PIL
 
-**Installing Dependencies**
+**Installing Dependencies:**
 
-Before proceeding with this tutorial, ensure that you have installed the necessary libraries, including NumPy and JSON. You can install these libraries using the following commands:
+To insall libraries such as NumPy, JSON, tqdm, and PIL please use the following commands:
 
 .. code-block:: bash
 
@@ -33,6 +33,7 @@ Before proceeding with this tutorial, ensure that you have installed the necessa
    pip install matplotlib
    pip install json
    pip install Pillow
+   pip install tqdm
 
 **Note:** Make sure you have pip installed on your system. If not, you can install it using the following command:
 
