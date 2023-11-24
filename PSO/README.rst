@@ -42,10 +42,16 @@ To insall libraries such as NumPy, JSON, tqdm, and PIL please use the following 
    sudo apt update
    sudo apt install python3-pip
 
+**Example:**
+
+An example can be run directly after the code has been downloaded and libraries have been installed. 
+
 
 **Conclusion**
 
-This tutorial provides a basic implementation of PSO in Python. For more advanced applications, you can explore various extensions and modifications of the algorithm.
+This tutorial provides a basic implementation of PSO in Python. For more advanced applications, you can explore 
+various extensions and modifications of the algorithm in terms of new inertia functions, velocity clamping 
+among others.
 
 
 
