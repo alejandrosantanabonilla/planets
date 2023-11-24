@@ -150,7 +150,6 @@ def create_gif(png_files, gif_filename):
         png_files: List of PNG file paths.
         gif_filename: Path to save the GIF animation.
     """
-    import imageio.v2 as imageio
     from PIL import Image, ImageDraw
 
     img, *imgs  = [Image.open(fn) for fn in png_files]
@@ -160,6 +159,9 @@ def create_gif(png_files, gif_filename):
 
 def pso_simulation(n_particles, c1, c2, w, number_gen, x_min, y_min, x_max, y_max, image_name="contour_plot", animation_name="PSO"):
     """ Particle Swarm Optimisation evolution """
+
+    import matplotlib.pyplot as plt
+    from matplotlib import cm
     
     coordinates = update_particles(n_particles, c1, c2, w, number_gen)
 
