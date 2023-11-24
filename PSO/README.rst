@@ -37,6 +37,7 @@ Before proceeding with this tutorial, ensure that you have installed the necessa
 **Note:** Make sure you have pip installed on your system. If not, you can install it using the following command:
 
 .. code-block:: bash
+
    sudo apt update
    sudo apt install python3-pip
 
