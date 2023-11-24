@@ -53,7 +53,7 @@ this command:
 
 **What to change:**
 
-Within the line of code :bash:`a = b + c`.
+Within the line of code :bash:`a = b + c` 
 
 
 **Conclusion**
