@@ -99,8 +99,8 @@ among others.
 
 **Next steps:**
 
-# Step 1. blala
+* Item 1 blala
                  
-# Step 2. blala
+* Item 2. blala
 
 
