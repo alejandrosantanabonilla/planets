@@ -60,12 +60,11 @@ def run_b3lyp_calculation(atomic_coordinates):
 
   mol = gto.Mole()
   mol.atom=list(transform_data(atomic_coordinates))
-  mol.unit = 'B'
   mol.basis = {'C': "def2-svp"}
   mol.build()
   
   # Perform B3LYP calculation (uncomment to run the calculation)
-  mf_hf = dft.RKS(mol)
+  mf_hf = dft.ROKS(mol)
   mf_hf.xc="b3lyp"
   mf_hf = mf_hf.newton()
 
