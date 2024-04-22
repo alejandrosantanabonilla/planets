@@ -62,7 +62,7 @@ def run_b3lyp_calculation(atomic_coordinates):
   mol = gto.Mole()
   mol.atom=list(transform_data(atomic_coordinates))
   mol.unit = 'B'
-  mol.basis = {'C': "sto-3g"}
+  mol.basis = {'C': "def2-svp"}
   mol.build()
   
   # Perform B3LYP calculation (uncomment to run the calculation)
