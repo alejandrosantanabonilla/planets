@@ -133,11 +133,12 @@ def pso_optimize_structure(atomic_coordinates, max_iter=100, swarm_size=15, c1=2
     r2=np.random.uniform(0,1,1)[0]
 
     # Update velocity
-    velocity = w * velocity + c1 * r1 * (pbest - swarm) + c2 * r1 * (gbest - swarm)
+    velocity = w * velocity + c1 * r1 * (pbest - swarm) + c2 * r2 * (gbest - swarm)
 
     # Update displacements (swarm remains empty)
     
     displacements = displacements + velocity
+    swarm = displacements
     
     print ("new swarm")
     # Evaluate new positions using displacements
