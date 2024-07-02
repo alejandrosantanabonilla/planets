@@ -1,42 +1,65 @@
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-from pysoftk.linear_polymer.linear_polymer import *
-from pysoftk.format_printers.format_mol import *
-from pysoftk.linear_polymer.mol_conformer import *
-from pysoftk.topologies.diblock import *
+from pysoftk.linear_polymer.linear_polymer import Lp
+from pysoftk.format_printers.format_mol import Fmt
+from pysoftk.linear_polymer.mol_conformer import Mcon
+from pysoftk.topologies.diblock import Pt
 
-#5 times the monomer
-a=Chem.MolFromSmiles('c1c([C@@H](CBr)Br)cccc1')
-b=Chem.MolFromSmiles('[C@@H]1(C(=O)OC(=O)[C@H]1Br)Br')
+from openbabel import pybel as pb 
 
-#Embedding is needed for being parsed as a pysoftk.object
-AllChem.EmbedMolecule(a)
-AllChem.EmbedMolecule(b)
 
-sty=Lp(a,"Br", 4, shift=1.4).linear_polymer("MMFF", 8500, 150, no_att=False)
-mal=Lp(b,"Br", 4, shift=1.4).linear_polymer("MMFF", 6500, 75, no_att=False)
+def pol_psam(mol1_smiles, mol2_smiles, mol1_length, mol2_length):
+    """
+    Generates a PSAM (Polystyrene-alt-Maleic Anhydride) polymer structure.
 
-Fmt(sty).mol_print("styrene_pol4.mol")
-Fmt(mal).mol_print("mal_pol4.mol")
+    Args:
+        mol1_smiles (str): SMILES string of the first monomer (styrene).
+        mol2_smiles (str): SMILES string of the second monomer (maleic acid).
+        mol1_length (int): Number of repeating units of the first monomer.
+        mol2_length (int): Number of repeating units of the second monomer.
+    """
 
-new_sty=Chem.MolFromMolFile("styrene_pol4.mol",removeHs=False)
-new_mal=Chem.MolFromMolFile("mal_pol4.mol",removeHs=False)
+    # Create RDKit molecules from SMILES
+    mol1 = Chem.MolFromSmiles(mol1_smiles)
+    mol2 = Chem.MolFromSmiles(mol2_smiles)
 
-AllChem.EmbedMolecule(new_sty)
-AllChem.EmbedMolecule(new_mal)
+    # Embed molecules for 3D coordinates
+    AllChem.EmbedMolecule(mol1)
+    AllChem.EmbedMolecule(mol2)
 
-Mcon(new_sty,3).conformer("conformers")
+    # Generate linear polymers using pysoftk (force field, steps, temp, no_att=False for minimization)
+    sty = Lp(mol1, "Br", mol1_length, shift=1.4).linear_polymer("MMFF", 8500, 175, no_att=False)
+    mal = Lp(mol2, "Br", mol2_length, shift=1.4).linear_polymer("MMFF", 6500, 50, no_att=False)
 
-confs=[]
-mols=Chem.SDMolSupplier('conformers.sdf')
-for i, mol in enumerate(mols):
-    confs.append(Chem.MolToMolBlock(mol))
+    # Save polymers as .mol files
+    Fmt(sty).mol_print(f"styrene_pol{mol1_length}.mol")
+    Fmt(mal).mol_print(f"mal_pol{mol2_length}.mol")
 
-sty_gs=Chem.MolFromMolBlock(confs[0])
-AllChem.EmbedMolecule(sty_gs)
+    sty.addh()
+    sty.make3D()
+    new_sty=Chem.MolFromMolBlock(sty.write("mol"))
 
-mols=[new_mal, sty_gs]
-total=Pt('AB', mols, "Br").pattern_block_poly(swap_H=True)
-Fmt(total).pdb_print("psam_4pol.pdb")
+    mal.addh()
+    mal.make3D()
+    new_mal=Chem.MolFromMolBlock(mal.write("mol"))
+
+    # Combine the polymers into a diblock copolymer (PSAM)
+    total = Pt('AB', [new_mal, new_sty], "Br").pattern_block_poly(swap_H=True)
+
+    total.addh()
+    total.make3D()
+    #total.write("pdb", f"psam_{mol1_length}_{mol2_length}.pdb")
+    # Save the PSAM polymer as a .pdb file
+    Fmt(total).pdb_print(f"psam_{mol1_length}_{mol2_length}.pdb")
+
+    
+
+# Example Usage
+if __name__ == "__main__":
+    mol1_smiles = 'c1c([C@@H](CBr)Br)cccc1'  # Styrene with terminal Br
+    mol2_smiles = '[C@@H]1(C(=O)OC(=O)[C@H]1Br)Br'  # Maleic anhydride with terminal Br
+
+    pol_psam(mol1_smiles, mol2_smiles, 40, 40)
+
 
