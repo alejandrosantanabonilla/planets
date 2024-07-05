@@ -4,13 +4,17 @@ from pyscf import gto, scf, dft
 import numpy as np
 import json
 
-def save_structure_json(data, energy, iteration, filename="structure_data.json"):
-    """Saves structure coordinates and energy to a JSON file."""
+def save_structure_json(data, energy, iteration, filename="structure_data.json", lbest=None):
+    """Saves structure coordinates, energy, iteration, and optionally lbest to a JSON file."""
     structure = {
         "iteration": iteration,
         "coordinates": data.tolist(),  # Convert to list for JSON serialization
         "energy": energy
     }
+
+    if lbest is not None:  # Add lbest only if it's provided
+        structure["lbest"] = lbest
+
     with open(filename, "a") as f:  # Append to file
         json.dump(structure, f)
         f.write("\n")  # Add newline for readability
@@ -22,9 +26,16 @@ def load_last_structure(filename="structure_data.json"):
             lines = f.readlines()
         if lines:
             last_structure = json.loads(lines[-1])
-            return np.array(last_structure["coordinates"]), last_structure["iteration"], last_structure["energy"]
+            last_coords = np.array(last_structure["coordinates"])
+            last_iter = last_structure["iteration"]
+            last_energy = last_structure["energy"]
+
+            # Try to load lbest if it exists, otherwise set it to None
+            last_lbest = last_structure.get("lbest")
+
+            return last_coords, last_iter, last_energy, last_lbest
     except FileNotFoundError:
-        return None, 0, None
+        return None, 0, None, None
 
 def sum_displacements(A, B):
   """
@@ -107,91 +118,6 @@ def generate_matrix_list(swarm_size, num_atoms, num_coords, dx=0.5):
     matrices.append(np.random.uniform(low=-dx, high=dx, size=(num_atoms, num_coords)))
   return matrices
 
-def pso_optimize_structure(atomic_coordinates, max_iter=10, swarm_size=15, c1=2.0, c2=2.0,
-                           w_min=0.1, w_max=0.9, dx=0.25, restart=False):
-    """Optimizes the energy of a structure using the Particle Swarm Optimization (PSO) algorithm.
-
-    Args:
-        atomic_coordinates: A numpy array of shape (num_atoms, 4) containing atomic coordinates and element (e.g., [['C', ...], ...]).
-        max_iter: Maximum number of iterations (default: 100).
-        swarm_size: Number of particles in the swarm (default: 15).
-        c1: Cognitive learning rate (default: 2.0).
-        c2: Social learning rate (default: 2.0).
-        w_min: Minimum inertia weight (default: 0.1).
-        w_max: Maximum inertia weight (default: 0.9).
-        dx: Maximum displacement for each coordinate (default: 0.25).
-        restart: Whether to restart from the last saved structure (default: False).
-
-    Returns:
-        The optimized atomic coordinates and the corresponding energy.
-    """
-
-    num_atoms, num_coords = atomic_coordinates.shape
-
-    # Load last structure if restarting
-    start_iter = 0
-    if restart:
-        last_coords, start_iter, last_energy = load_last_structure()
-        if last_coords is not None:
-            try:  # Try to prioritize loading coordinates from file
-                if not np.array_equal(last_coords, atomic_coordinates):
-                    raise ValueError("New coordinates provided with restart=True. Using coordinates from structure_data.json.")
-            except ValueError as e:
-                print(e) 
-            atomic_coordinates = last_coords
-
-    # Set up particle swarm with displacements as array of arrays repeated for swarm_size
-    displacements = generate_matrix_list(swarm_size, num_atoms, num_coords, dx)
-    swarm = np.zeros_like(displacements)
-    velocity = np.zeros_like(swarm)
-    pbest = np.zeros_like(displacements)
-    pbest_energy = np.zeros(swarm_size)
-
-    for i in range(swarm_size):
-        displaced_coordinates = sum_displacements(displacements[i][:, -2:], atomic_coordinates.copy())
-        pbest_energy[i] = run_pbe_calculation(displaced_coordinates)
-
-    gbest = pbest[pbest_energy.argmin()]
-    gbest_energy = min(pbest_energy)
-
-    print("Main PSO loop")
-    best_coordinates = atomic_coordinates.copy()  # Initialize best_coordinates
-    iter = 0  # Initialize iter before the loop
-    for iter in range(start_iter, max_iter):  # Start from loaded iteration if restarting
-        print("Iteration number:", iter)
-
-        # Update inertia weight
-        w = w_max - (iter / (max_iter - 1)) * (w_max - w_min)
-        r1 = np.random.uniform(0, 1, 1)[0]
-        r2 = np.random.uniform(0, 1, 1)[0]
-
-        # Update velocity
-        velocity = w * velocity + c1 * r1 * (pbest - swarm) + c2 * r2 * (gbest - swarm)
-
-        # Update displacements
-        displacements = displacements + velocity
-        swarm = displacements
-
-        # Evaluate new positions using displacements
-        for i in range(swarm_size):
-            displaced_coordinates = sum_displacements(displacements[i][:, -2:], atomic_coordinates.copy())
-            new_energy = run_pbe_calculation(displaced_coordinates)
-
-            if new_energy < pbest_energy[i]:
-                pbest[i] = displacements[i]
-                pbest_energy[i] = new_energy
-
-        if min(pbest_energy) < gbest_energy:
-            gbest = pbest[np.argmin(pbest_energy)]
-            gbest_energy = min(pbest_energy)
-            print("Gbest energy:", gbest_energy)
-            best_coordinates = sum_displacements(gbest[:, -2:], atomic_coordinates.copy())
-
-        # Save structure after each iteration
-        save_structure_json(best_coordinates, gbest_energy, iter + 1)  # Save with iter + 1 
-
-    print("Successfully terminated after:", iter)
-    return best_coordinates, gbest_energy
    
 def generate_points(radius, num_points, min_neighbor_distance):
   """
@@ -256,10 +182,107 @@ def generate_atomic_coordinates(radius, num_points, min_neighbor_distance, eleme
   atomic_coordinates = np.column_stack((element_repeated, coordinates))
 
   return atomic_coordinates
-  
+
+def pso_optimize_structure(atomic_coordinates, max_iter=10, swarm_size=15, c1=2.0, c2=2.0,
+                           w_min=0.1, w_max=0.9, dx=0.25, restart=False):
+    """Optimizes the energy of a structure using the Particle Swarm Optimization (PSO) algorithm.
+
+    Args:
+        atomic_coordinates: A numpy array of shape (num_atoms, 4) containing atomic coordinates and element (e.g., [['C', ...], ...]).
+        max_iter: Maximum number of iterations (default: 100).
+        swarm_size: Number of particles in the swarm (default: 15).
+        c1: Cognitive learning rate (default: 2.0).
+        c2: Social learning rate (default: 2.0).
+        w_min: Minimum inertia weight (default: 0.1).
+        w_max: Maximum inertia weight (default: 0.9).
+        dx: Maximum displacement for each coordinate (default: 0.25).
+        restart: Whether to restart from the last saved structure (default: False).
+
+    Returns:
+        The optimized atomic coordinates and the corresponding energy.
+    """
+
+    num_atoms, num_coords = atomic_coordinates.shape
+
+    # Load last structure if restarting
+    start_iter = 0
+    if restart:
+        last_coords, start_iter, last_energy, last_lbest = load_last_structure()
+        if last_coords is not None:
+            try:  # Try to prioritize loading coordinates from file
+                if not np.array_equal(last_coords, atomic_coordinates):
+                    raise ValueError("New coordinates provided with restart=True. Using coordinates from structure_data.json.")
+            except ValueError as e:
+                print(e)
+            atomic_coordinates = last_coords
+
+    # Set up particle swarm with displacements as array of arrays repeated for swarm_size
+    displacements = generate_matrix_list(swarm_size, num_atoms, num_coords, dx)
+    swarm = np.zeros_like(displacements)
+    velocity = np.zeros_like(swarm)
+    pbest = np.zeros_like(displacements)
+    pbest_energy = np.zeros(swarm_size)
+
+    # Initialize lbest and pbest arrays
+    lbest = np.zeros_like(displacements)
+    if restart and last_lbest is not None:
+        lbest = np.array(last_lbest) # Load lbest from last saved structure if available
+    lbest_energy = np.full(swarm_size, np.inf)  # Initialize to infinity
+
+    for i in range(swarm_size):
+        displaced_coordinates = sum_displacements(displacements[i][:, -2:], atomic_coordinates.copy())
+        pbest_energy[i] = run_pbe_calculation(displaced_coordinates)
+
+    gbest = pbest[pbest_energy.argmin()]
+    gbest_energy = min(pbest_energy)
+
+    print("Main PSO loop")
+    best_coordinates = atomic_coordinates.copy()  # Initialize best_coordinates
+    for itera in range(start_iter, max_iter):  # Using 'itera' as the loop variable
+        print("Iteration number:", itera)
+
+        # Update inertia weight
+        w = w_max - (itera / (max_iter - 1)) * (w_max - w_min)
+        r1 = np.random.uniform(0, 1, 1)[0]
+        r2 = np.random.uniform(0, 1, 1)[0]
+
+        # Update velocity (include lbest)
+        velocity = w * velocity + c1 * r1 * (pbest - swarm) + c2 * r2 * (gbest - swarm) 
+
+        # Update displacements and swarm
+        displacements = displacements + velocity
+        swarm = displacements
+
+        # Evaluate new positions and update lbest, pbest, and gbest
+        for i in range(swarm_size):
+            displaced_coordinates = sum_displacements(displacements[i][:, -2:], atomic_coordinates.copy())
+            new_energy = run_pbe_calculation(displaced_coordinates)
+
+            if new_energy < lbest_energy[i]:
+                lbest_energy[i] = new_energy
+                lbest[i] = displacements[i]
+
+            if new_energy < pbest_energy[i]:
+                pbest_energy[i] = new_energy
+                pbest[i] = displacements[i]
+
+        # Update gbest using the lbest_energy array
+        gbest_index = np.argmin(lbest_energy)
+        if lbest_energy[gbest_index] < gbest_energy:
+            gbest = lbest[gbest_index]
+            gbest_energy = lbest_energy[gbest_index]
+            best_coordinates = sum_displacements(gbest[:, -2:], atomic_coordinates.copy())
+            print("Gbest energy:", gbest_energy)
+
+        # Save structure (include lbest)
+        save_structure_json(best_coordinates, gbest_energy, itera + 1, lbest=lbest.tolist())
+
+    print("Successfully terminated after: {}".format(itera))
+    return best_coordinates, gbest_energy 
+
 # Example usage
 radius = 4.5
-num_points = 10
+num_points = 3
 min_neighbor_distance = 1.25
 element = "C"
 
@@ -268,8 +291,8 @@ atomic_coordinates=generate_atomic_coordinates(radius, num_points, min_neighbor_
 #write_xyz_file(transform_data(atomic_coordinates), energy, "initial.xyz")
 
 #PSO Optimization Example
-max_iter=10
-swarm_size=15
+max_iter=20
+swarm_size=4
 c1=1.42
 c2=1.42
 w_min=0.35
@@ -281,4 +304,5 @@ dx=0.95
 restart = True  # Set to True if you want to restart
 best_coord, best_energy = pso_optimize_structure(atomic_coordinates, max_iter, swarm_size, c1, c2, w_min, w_max, dx, restart=restart)
 write_xyz_file(transform_data(best_coord), best_energy, "final.xyz")
+
 
