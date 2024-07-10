@@ -1,4 +1,4 @@
-Absolutely! Let's break down this Python code for understanding RDKit and EHT (Extended Hückel Theory) calculations.
+Python code for understanding RDKit and EHT (Extended Hückel Theory) calculations.
 
 **What This Code Does**
 
