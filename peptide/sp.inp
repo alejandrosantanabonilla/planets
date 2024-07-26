@@ -69,6 +69,31 @@
          &END NON_LOCAL
       &END vdW_POTENTIAL
     &END XC
+    &PRINT
+      &AO_MATRICES
+          ADD_LAST SYMBOLIC
+          &EACH
+             QS_SCF 0
+          &END EACH
+    #     ADD_LAST NUMERIC
+    #     DENSITY .TRUE.
+    #     KOHN_SHAM_MATRIX .TRUE.
+    #    OVERLAP .TRUE.
+    #     KINETIC_ENERGY .TRUE.
+    #     MATRIX_VXC .TRUE.
+    #     POTENTIAL_ENERGY .TRUE.
+    #     CORE_HAMILTONIAN
+    #     NDIGITS 30
+         FILENAME KS_MAT
+      &END AO_MATRICES
+    #  &MO
+    #   EIGENVECTORS .TRUE.
+    #   &EACH
+    #    QS_SCF 0
+    #   &END
+    #   FILENAME ./EIGEN.dat
+    #  &END MO
+    &END PRINT
   &END DFT
   &SUBSYS
     &CELL
