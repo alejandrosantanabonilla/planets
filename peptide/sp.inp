@@ -69,25 +69,6 @@
          &END NON_LOCAL
       &END vdW_POTENTIAL
     &END XC
-    &PRINT
-!    !At the end of the SCF procedure generate cube files of the density
-!     &E_DENSITY_CUBE OFF
-!     &END E_DENSITY_CUBE
-!    ! compute eigenvalues and homo-lumo gap each 10nd MD step
-       &MO_CUBES
-          NLUMO 10
-          NHOMO 10
-          WRITE_CUBE .FALSE.
-       &END
-!       &PDOS
-!         FILENAME PDOS-TMAA
-!         COMPONENTS .TRUE.
-!         NLUMO 50
-!         &LDOS
-!          COMPONENTS .TRUE.
-!        &END LDOS
-!       &END PDOS
-    &END PRINT
   &END DFT
   &SUBSYS
     &CELL
