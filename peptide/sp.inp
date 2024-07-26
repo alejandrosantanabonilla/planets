@@ -1,0 +1,127 @@
+@SET SYSNAME                mol
+
+&GLOBAL
+  PROJECT peptide_1
+  PRINT_LEVEL LOW
+  RUN_TYPE ENERGY
+  EXTENDED_FFT_LENGTHS
+&END GLOBAL
+
+&FORCE_EVAL
+  STRESS_TENSOR NUMERICAL
+  METHOD Quickstep
+  &DFT
+    BASIS_SET_FILE_NAME /shared/ucl/apps/cp2k/7.1/gnu-4.9.2/cp2k-7.1/data/BASIS_MOLOPT
+    POTENTIAL_FILE_NAME /shared/ucl/apps/cp2k/7.1/gnu-4.9.2/cp2k-7.1/data/GTH_POTENTIALS
+    BASIS_SET_FILE_NAME /shared/ucl/apps/cp2k/7.1/gnu-4.9.2/cp2k-7.1/data/BASIS_ADMM
+    BASIS_SET_FILE_NAME /shared/ucl/apps/cp2k/7.1/gnu-4.9.2/cp2k-7.1/data/BASIS_ADMM_MOLOPT
+    BASIS_SET_FILE_NAME /shared/ucl/apps/cp2k/7.1/gnu-4.9.2/cp2k-7.1/data/EMSL_BASIS_SETS
+    WFN_RESTART_FILE_NAME last.wfn    
+    CHARGE 0
+    &MGRID
+      CUTOFF 500
+      REL_CUTOFF 50
+    &END MGRID
+    &QS
+      METHOD GPW
+      EPS_PGF_ORB 1.0E-50
+    &END QS
+    #&AUXILIARY_DENSITY_MATRIX_METHOD
+    #  METHOD BASIS_PROJECTION
+    #  ADMM_PURIFICATION_METHOD MO_DIAG
+    #&END
+    &POISSON
+     PERIODIC NONE
+     POISSON_SOLVER MT
+    &END
+    &SCF
+     SCF_GUESS RESTART
+     EPS_SCF 9.0E-7
+     MAX_SCF 1000
+     &OT ON
+        CHOLESKY INVERSE
+        MINIMIZER  CG
+     &END OT
+     &OUTER_SCF
+       MAX_SCF 50
+       EPS_SCF  1.0E-6
+     &END OUTER_SCF
+    &END SCF
+    &XC
+      &XC_FUNCTIONAL
+        &LIBXC
+          FUNCTIONAL XC_GGA_X_C09X
+        &END LIBXC
+        &VWN
+        &END VWN
+      &END XC_FUNCTIONAL
+      &XC_GRID
+        XC_SMOOTH_RHO NN50
+        XC_DERIV NN50_SMOOTH
+      &END XC_GRID
+      &vdW_POTENTIAL
+         DISPERSION_FUNCTIONAL NON_LOCAL
+         &NON_LOCAL
+           TYPE LMKLL
+           VERBOSE_OUTPUT
+           KERNEL_FILE_NAME /shared/ucl/apps/cp2k/7.1/gnu-4.9.2/cp2k-7.1/data/vdW_kernel_table.dat
+#          CUTOFF  100
+         &END NON_LOCAL
+      &END vdW_POTENTIAL
+    &END XC
+    &PRINT
+!    !At the end of the SCF procedure generate cube files of the density
+!     &E_DENSITY_CUBE OFF
+!     &END E_DENSITY_CUBE
+!    ! compute eigenvalues and homo-lumo gap each 10nd MD step
+       &MO_CUBES
+          NLUMO 10
+          NHOMO 10
+          WRITE_CUBE .FALSE.
+       &END
+!       &PDOS
+!         FILENAME PDOS-TMAA
+!         COMPONENTS .TRUE.
+!         NLUMO 50
+!         &LDOS
+!          COMPONENTS .TRUE.
+!        &END LDOS
+!       &END PDOS
+    &END PRINT
+  &END DFT
+  &SUBSYS
+    &CELL
+      ABC 35.0 35.0 70.0
+      PERIODIC NONE
+    &END CELL
+    &TOPOLOGY
+     COORD_FILE_FORMAT XYZ
+     COORD_FILE_NAME ${SYSNAME}.xyz
+    &END TOPOLOGY
+    &KIND H
+      BASIS_SET DZVP-MOLOPT-SR-GTH
+      #BASIS_SET AUX_FIT cFIT3
+      POTENTIAL GTH-PBE-q1
+    &END KIND
+    &KIND C
+      BASIS_SET DZVP-MOLOPT-SR-GTH
+      #BASIS_SET AUX_FIT cFIT3
+      POTENTIAL GTH-PBE-q4
+    &END KIND
+    &KIND N
+      BASIS_SET DZVP-MOLOPT-SR-GTH
+      #BASIS_SET AUX_FIT cFIT3
+      POTENTIAL GTH-PBE-q5
+    &END KIND
+    &KIND O
+      BASIS_SET DZVP-MOLOPT-SR-GTH
+      #BASIS_SET AUX_FIT cFIT3
+      POTENTIAL GTH-PBE-q6
+    &END KIND
+    &KIND S
+      BASIS_SET DZVP-MOLOPT-SR-GTH
+      #BASIS_SET AUX_FIT cFIT3
+      POTENTIAL GTH-PBE-q6
+    &END KIND
+ &END SUBSYS
+&END FORCE_EVAL
