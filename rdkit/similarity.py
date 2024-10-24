@@ -14,7 +14,7 @@ import cProfile
 
 def read_molecules(input_file, chunksize):
     """Reads molecules from a SMILES file in chunks."""
-    for chunk in pd.read_csv(input_file, delim_whitespace=True, header=None, 
+    for chunk in pd.read_csv(input_file, sep='\s+', header=None, 
                               engine='python', chunksize=chunksize, names=['Molecule']):
         yield chunk  # Yield chunks instead of storing them in a list
 
@@ -73,10 +73,11 @@ def calculate_similarity_matrix(input_data, chunksize, num_cores):
 
 if __name__ == "__main__":
     #similarity_matrix = calculate_similarity_matrix("total.dat", 120, 2)
-    cProfile.run('calculate_similarity_matrix("total.dat",1200, 2)', 'profiling_results')
+    cProfile.run('calculate_similarity_matrix("total.dat",1200, 8)', 'profiling_results_1200_1_thread_4')
     print ("finished")
     # Access and visualize parts of the matrix as needed
     #import matplotlib.pyplot as plt
     #plt.imshow(similarity_matrix[0, 0], cmap='viridis', interpolation='nearest')
     #plt.colorbar()
     #plt.show()
+
