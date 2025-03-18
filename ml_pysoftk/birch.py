@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.cluster import Birch
 from sklearn.metrics import pairwise_distances
 
-def birch_cluster_tanimoto(tanimoto_distance_matrix, threshold=0.5):
+def birch_cluster_tanimoto(tanimoto_distance_matrix, threshold=0.5, branching_factor=50):
     """
     Performs BIRCH clustering based on the indices of a Tanimoto distance matrix.
 
@@ -22,7 +22,7 @@ def birch_cluster_tanimoto(tanimoto_distance_matrix, threshold=0.5):
     data_indices = np.arange(n_samples).reshape(-1, 1) #Reshape to make it 2d for sklearn
 
     # BIRCH clustering
-    birch = Birch(n_clusters=None, threshold=threshold, compute_labels=True)
+    birch = Birch(n_clusters=None, threshold=threshold, branching_factor=branching_factor, compute_labels=True)
     birch.fit(data_indices)  # Birch is fit to the indices.
     labels = birch.labels_
 
