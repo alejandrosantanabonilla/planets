@@ -1,48 +1,46 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.cluster import Birch
-from sklearn.metrics import pairwise_distances
+from sklearn.manifold import MDS
 
-def birch_cluster_tanimoto(tanimoto_distance_matrix, threshold=0.5, branching_factor=50):
+def mds_birch_clustering(tanimoto_distance_matrix, birch_threshold=0.5):
     """
-    Performs BIRCH clustering based on the indices of a Tanimoto distance matrix.
+    Performs MDS followed by BIRCH clustering on a Tanimoto distance matrix.
 
     Args:
-        tanimoto_distance_matrix (numpy.ndarray): The Tanimoto distance matrix.
-        threshold (float): The threshold for BIRCH clustering.
+        tanimoto_distance_matrix (numpy.ndarray): The Tanimoto distance matrix (nxn).
+        birch_threshold (float): The threshold for BIRCH clustering.
 
     Returns:
-        dict: A dictionary where keys are cluster labels and values are lists of indices
-              corresponding to the members of each cluster.
+        numpy.ndarray: Cluster labels assigned by BIRCH.
     """
 
-    # Assuming the distance matrix is symmetric and represents pairwise distances
-    n_samples = tanimoto_distance_matrix.shape[0]
+    # MDS projection
+    mds = MDS(n_components=2, dissimilarity='precomputed', random_state=42)
+    mds_embedding = mds.fit_transform(tanimoto_distance_matrix)
 
-    # Generate a dummy dataset of indices (0 to n_samples - 1)
-    data_indices = np.arange(n_samples).reshape(-1, 1) #Reshape to make it 2d for sklearn
-
-    # BIRCH clustering
-    birch = Birch(n_clusters=None, threshold=threshold, branching_factor=branching_factor, compute_labels=True)
-    birch.fit(data_indices)  # Birch is fit to the indices.
+    # BIRCH clustering on MDS embedding
+    birch = Birch(n_clusters=None, threshold=birch_threshold, compute_labels=True)
+    birch.fit(mds_embedding)
     labels = birch.labels_
 
-    # Create a dictionary to store cluster members
-    clusters = {}
-    unique_labels = np.unique(labels)
+    # Visualization (optional)
+    plt.figure(figsize=(10, 8))
+    plt.scatter(mds_embedding[:, 0], mds_embedding[:, 1], c=labels, cmap='viridis')
+    plt.title("MDS + BIRCH Clustering")
+    plt.xlabel("MDS Dimension 1")
+    plt.ylabel("MDS Dimension 2")
+    plt.colorbar(label="Cluster Label")
+    plt.show()
 
-    for cluster_label in unique_labels:
-        cluster_members = np.where(labels == cluster_label)[0].tolist()
-        clusters[cluster_label] = cluster_members
-
-    return clusters
+    return labels
 
 # Example Usage (replace with your Tanimoto distance matrix)
-# Create a dummy tanimoto distance matrix.
-data_points = np.random.rand(100, 20) # example data
-tanimoto_distance_matrix = pairwise_distances(data_points, metric='jaccard') #jaccard is used as a proxy for tanimoto.
+n_samples = 100
+tanimoto_distance_matrix = np.random.rand(n_samples, n_samples)
+tanimoto_distance_matrix = (tanimoto_distance_matrix + tanimoto_distance_matrix.T) / 2
 
-cluster_results = birch_cluster_tanimoto(tanimoto_distance_matrix, threshold=0.3)
+cluster_labels = mds_birch_clustering(tanimoto_distance_matrix, birch_threshold=0.3)
 
-# Print the cluster results
-for cluster_label, members in cluster_results.items():
-    print(f"Cluster {cluster_label}: {members}")
+# Print cluster labels
+print("Cluster Labels:", cluster_labels)
