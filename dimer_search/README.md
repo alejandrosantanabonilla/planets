@@ -254,3 +254,11 @@ The restart_relax=True parameter enables the continuation of a potentially long 
 4. State Restoration: If valid and compatible restart files are found, the algorithm reads the necessary information to restore its internal state as closely as possible to where the previous run left off. This typically involves loading the last coordinates and retrieving the number of steps already completed.
 5. Continuation: The relaxation process then resumes from this restored state. It continues executing steps until the cumulative number of steps reaches the new totalsteps value specified in the current process_molecules call.
 
+## Why Use Restart?
+
+1. Long Simulations: Break down simulations that might take days or weeks into manageable segments. Run for 12 hours, save state, restart.
+2. Resource Limits: Overcome wall-time limits on computing clusters. Run until the time limit, then submit a new job that restarts from the previous state.
+3. Interruption Recovery: Recover from unexpected interruptions like power outages, system crashes, or accidental process termination without losing all progress.
+4. Progressive Exploration: Run an initial short exploration, analyze the results (e.g., check energies in relax_run_minima.xyz), and then decide to continue the simulation for longer if needed.
+
+
