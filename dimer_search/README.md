@@ -139,3 +139,30 @@ The number of structures will match the number of orientation/translation pairs 
 ### Goal
 To generate the initial dimer structures (as in Test Case 1) and then perform a structural relaxation or energy minimization on each generated structure. This test case starts the relaxation process from scratch, ignoring any previous relaxation runs.
 
+```python
+# --- Test Case 2: Process WITH relaxation (fresh start) ---
+print("\n--- Test Case 2: With Relaxation (Fresh Start) ---")
+
+# Clean up potential relaxation output files from any previous runs
+# This ensures that restart_relax=False truly starts fresh.
+for f in ['minima.traj', 'qn*.traj', 'hop.log', 'relax_run_*.xyz', 'relax_run_*.png']:
+    for ff in glob.glob(f):
+        if os.path.exists(ff): os.remove(ff)
+
+# Initialize the processor. Note: output_file still refers to the *initial* assembly.
+processor2 = MoleculeProcessor(input_file="mol.xyz", output_file="initial_assembly_for_relax.xyz")
+
+# Process the molecules, enabling relaxation
+result2 = processor2.process_molecules(
+    yaw_rad=yaw, pitch_rad=pitch, roll_rad=roll, translation_vector=translations,
+    relax_molecule=True,          # Key parameter: Relaxation is turned ON
+    restart_relax=False,         # Key parameter: Do NOT restart, start fresh
+    totalsteps=50,               # Number of steps for the relaxation simulation/optimization
+    tblite_params=tblite_config, # Pass the calculator configuration
+    mh_params= mh_config,        # Pass the relaxation algorithm configuration
+    output_filename_prefix="relax_run" # Prefix for relaxation-specific output files
+)
+
+if result2:
+    print("Test Case 2 completed. Check 'initial_assembly_for_relax.xyz', 'relax_run_minima.xyz', etc.")
+```
