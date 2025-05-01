@@ -85,22 +85,6 @@ translations = [
     [1.0, 0.0, 9.0]   # Corresponds to yaw[1], pitch[1], roll[1]
 ]
 
-# --- Define Relaxation Parameters (if relaxation is enabled) ---
-
-# Configuration for the underlying energy calculator (e.g., TBLite)
-# These parameters are passed directly to the calculator.
-tblite_config = {
-    "electronic_temperature": 5500.0, # Example: Fermi-Dirac smearing temperature
-    "max_iterations": 300,            # Example: Max SCF cycles
-}
-
-# Configuration for the relaxation/search algorithm (e.g., Metropolis-Hastings)
-# These parameters control the simulation dynamics.
-mh_config = {
-    "T0": 1200.0,   # Initial temperature for sampling (e.g., in Kelvin)
-    "Ediff0": 0.6,  # Initial energy difference criterion (e.g., in eV)
-    "fmax": 0.1     # Force convergence criterion for geometry optimization (e.g., in eV/Angstrom)
-}
 ```
 
 This initial block sets up two distinct relative placements (defined by rotation and translation) for creating dimer structures from the base molecule in mol.xyz. It also prepares
