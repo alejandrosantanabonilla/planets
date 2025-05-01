@@ -64,6 +64,28 @@ import numpy as np
 from dimer_search import *
 import glob
 import os
+from ase.build import molecule
+from ase.io import write, read
+from ase import Atoms
+
+print("Running MoleculeProcessor Example...")
+
+# --- Create the initial system (Two Water Molecules) ---
+# Create the first water molecule
+water1 = molecule('H2O')
+
+# Create a second water molecule and translate it slightly
+water2 = molecule('H2O')
+
+water2.translate([0.0, 0.0, 5.0]) # Example translation
+
+# Combine them into a single Atoms object
+initial_system = water1 + water2 # ASE allows direct addition
+
+# Save the initial system to mol.xyz so the processor can read it
+input_filename = "mol.xyz"
+write(input_filename, initial_system)
+print(f"Created initial system with {len(initial_system)} atoms and saved to '{input_filename}'.")
 
 print("Running MoleculeProcessor Example...")
 
