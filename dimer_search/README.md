@@ -89,3 +89,49 @@ translations = [
 
 This initial block sets up two distinct relative placements (defined by rotation and translation) for creating dimer structures from the base molecule in mol.xyz. It also prepares
 configuration dictionaries (tblite_config, mh_config) that will only be used if the relaxation feature is turned on in the subsequent steps.
+
+## Test Case 1: Generate Assembly Without Relaxation
+
+### Goal
+
+To generate the initial dimer structures based on the defined orientations and translations without performing any subsequent energy minimization or structural relaxation. This is 
+useful for quickly creating and visualizing the starting geometries.
+
+```python
+# --- Test Case 1: Process without relaxation ---
+print("\n--- Test Case 1: No Relaxation ---")
+
+# Initialize the processor with input and the desired output file for the assemblies
+processor1 = MoleculeProcessor(input_file="mol.xyz", output_file="initial_assembly.xyz")
+
+# Process the molecules
+result1 = processor1.process_molecules(
+    yaw_rad=yaw,
+    pitch_rad=pitch,
+    roll_rad=roll,
+    translation_vector=translations,
+    relax_molecule=False # Key parameter: Relaxation is turned OFF
+)
+
+# Check if the process completed successfully
+if result1:
+    print("Test Case 1 completed. Check 'initial_assembly.xyz'.")
+```
+
+### Explanation
+1. An instance of MoleculeProcessor is created. It's configured to read from mol.xyz and write the generated structures to initial_assembly.xyz.
+2. The process_molecules method is called with the orientation angles (yaw_rad, pitch_rad, roll_rad) and translation_vector defined earlier.
+3. The crucial parameter here is relax_molecule=False. This instructs the processor to:
+    3.1 Read the base molecule from mol.xyz.
+    3.2 For each specified placement (combination of rotation and translation):
+      3.2.1 Create a copy of the base molecule.
+      3.2.2 Apply the rotation (yaw, pitch, roll) and translation to the copy.
+      3.2.3 Combine the original molecule and the transformed copy to form a dimer.
+4. Write the coordinates of all generated dimer structures sequentially into the specified output_file (initial_assembly.xyz).
+   No energy calculations or geometry changes are performed.
+
+### Expected Output
+A single file named initial_assembly.xyz. This file will contain the atomic coordinates of the generated dimer structures, concatenated one after another in standard XYZ format. 
+The number of structures will match the number of orientation/translation pairs provided (two in this example).
+
+
