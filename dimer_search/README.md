@@ -124,9 +124,9 @@ if result1:
 3. The crucial parameter here is relax_molecule=False. This instructs the processor to:
     3.1 Read the base molecule from mol.xyz.
     3.2 For each specified placement (combination of rotation and translation):
-      3.2.1 Create a copy of the base molecule.
-      3.2.2 Apply the rotation (yaw, pitch, roll) and translation to the copy.
-      3.2.3 Combine the original molecule and the transformed copy to form a dimer.
+      - Create a copy of the base molecule.
+      - Apply the rotation (yaw, pitch, roll) and translation to the copy.
+      - Combine the original molecule and the transformed copy to form a dimer.
 4. Write the coordinates of all generated dimer structures sequentially into the specified output_file (initial_assembly.xyz).
    No energy calculations or geometry changes are performed.
 
