@@ -122,8 +122,8 @@ if result1:
 1. An instance of MoleculeProcessor is created. It's configured to read from mol.xyz and write the generated structures to initial_assembly.xyz.
 2. The process_molecules method is called with the orientation angles (yaw_rad, pitch_rad, roll_rad) and translation_vector defined earlier.
 3. The crucial parameter here is relax_molecule=False. This instructs the processor to:
-    3.1 Read the base molecule from mol.xyz.
-    3.2 For each specified placement (combination of rotation and translation):
+    - Read the base molecule from mol.xyz.
+    - For each specified placement (combination of rotation and translation):
       - Create a copy of the base molecule.
       - Apply the rotation (yaw, pitch, roll) and translation to the copy.
       - Combine the original molecule and the transformed copy to form a dimer.
