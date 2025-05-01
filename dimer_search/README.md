@@ -166,3 +166,18 @@ result2 = processor2.process_molecules(
 if result2:
     print("Test Case 2 completed. Check 'initial_assembly_for_relax.xyz', 'relax_run_minima.xyz', etc.")
 ```
+
+### Explanation
+
+1. Cleanup: The code first attempts to delete common output files associated with the relaxation process (like .traj, .log files). This step is crucial to guarantee that setting restart_relax=False results in a completely new relaxation run, unaffected by any previous attempts.
+2. An instance of MoleculeProcessor is created. The output_file (initial_assembly_for_relax.xyz) will contain the initial, unrelaxed structures generated before relaxation begins.
+3. The process_molecules method is called with several important parameters enabled for relaxation:
+   - relax_molecule=True: This activates the relaxation procedure for each dimer generated.
+   - restart_relax=False: This explicitly tells the relaxation algorithm not to look for or use any existing state/restart files. Each relaxation starts from the initial generated geometry.
+   - totalsteps=50: This defines the duration or extent of each relaxation run (e.g., maximum number of optimization steps, molecular dynamics steps, or search steps). Here, it's set to a small value for a short demonstration run.
+   - tblite_params, mh_params: The configuration dictionaries defined earlier are passed to configure the energy calculator and the relaxation algorithm, respectively.
+   - output_filename_prefix="relax_run": This string is used as a base name for various output files generated during the relaxation phase. This helps organize outputs when multiple relaxation runs might occur.
+
+### Expected Output
+
+
