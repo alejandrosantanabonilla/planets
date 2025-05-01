@@ -239,3 +239,18 @@ print("\nExample execution finished.")
 2. Updated files starting with relax_run: If the restart was successful, the existing files (relax_run_minima.xyz, minima.traj, qn*.traj, hop.log, etc.) will be appended to or updated. The simulation history within these files will now reflect a total run length approaching the new totalsteps value (240). If the restart failed (e.g., files were missing), these files might be overwritten with a new run of 240 steps, or the process might error out depending on the library's implementation.
 3. The console output provides a hint about whether the restart likely succeeded based on the completion status.
 
+## Detailed Explanation of the Restart Option (restart_relax=True) 
+
+The restart_relax=True parameter enables the continuation of a potentially long and computationally expensive relaxation or conformational search process.
+
+### How it Works:
+
+1. Signal to Resume: When process_molecules is called with restart_relax=True, it signals to the internal relaxation algorithm that it should attempt to resume a previous calculation rather than starting anew.
+2. File Identification: The algorithm uses the output_filename_prefix (e.g., "relax_run") to identify the relevant set of files from a previous run in the current working directory.
+3. State File Check: It searches for specific files known to store the state of the simulation. Common candidates include:
+   - Trajectory Files (.traj): Files like minima.traj or qn_*.traj often store the sequence of atomic coordinates visited, potentially including the very last configuration reached.
+   - Log Files (.log): Files like hop.log usually record the progress, including the number of steps already performed, energies, acceptance rates, and possibly other algorithm-specific state information.
+   - Dedicated Restart Files: Some algorithms might write a specific checkpoint or restart file containing a more complete snapshot of the simulation state (coordinates, velocities, optimizer state, random number generator state, step count, etc.).
+4. State Restoration: If valid and compatible restart files are found, the algorithm reads the necessary information to restore its internal state as closely as possible to where the previous run left off. This typically involves loading the last coordinates and retrieving the number of steps already completed.
+5. Continuation: The relaxation process then resumes from this restored state. It continues executing steps until the cumulative number of steps reaches the new totalsteps value specified in the current process_molecules call.
+
