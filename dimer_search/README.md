@@ -134,4 +134,8 @@ if result1:
 A single file named initial_assembly.xyz. This file will contain the atomic coordinates of the generated dimer structures, concatenated one after another in standard XYZ format. 
 The number of structures will match the number of orientation/translation pairs provided (two in this example).
 
+## Test Case 2: Generate Assembly WITH Relaxation (Fresh Start)
+
+### Goal
+To generate the initial dimer structures (as in Test Case 1) and then perform a structural relaxation or energy minimization on each generated structure. This test case starts the relaxation process from scratch, ignoring any previous relaxation runs.
 
