@@ -302,7 +302,7 @@ The restart_relax=True parameter enables the continuation of a potentially long 
 
 Monitor the console output, which will indicate the progress through the three test cases. After execution, inspect the generated files (initial_assembly*.xyz, relax_run*.*) to see the results of each step. Compare 
 initial_assembly.xyz and initial_assembly_for_relax.xyz (they should be the same). Examine the relax_run files after Test Case 2 and see how they are potentially updated after Test Case 3.
-This tutorial provides a comprehensive guide to using the MoleculeProcessor for generating molecular assemblies, performing
+This tutorial provides a comprehensive guide to using the MoleculeProcessor for generating molecular assemblies, performing.
 
 
 
