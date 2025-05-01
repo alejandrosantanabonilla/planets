@@ -61,7 +61,6 @@ The script begins by importing required libraries and defining the parameters th
 
 ```python
 import numpy as np
-# Assuming MoleculeProcessor is in dimer_search
 from dimer_search import *
 import glob
 import os
