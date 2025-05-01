@@ -182,9 +182,9 @@ if result2:
 
 1. initial_assembly_for_relax.xyz: Contains the coordinates of the initial, unrelaxed dimer structures (should be identical in content to initial_assembly.xyz from Test Case 1).
 2. Files starting with the prefix relax_run: These files contain the results and trajectory of the relaxation process itself. The exact files depend on the dimer_search library's implementation, but common examples include:
-   -relax_run_minima.xyz: Often contains the lowest-energy structures found during the relaxation for each starting dimer.
-   -minima.traj or qn*.traj: Trajectory files storing intermediate geometries or identified local minima. These are often crucial for the restart functionality.
-   -hop.log: A log file detailing the steps, energies, acceptance criteria, etc., of the relaxation/search algorithm.
-   -Other potential files like images (.png) or intermediate structure files (.xyz).
+   - relax_run_minima.xyz: Often contains the lowest-energy structures found during the relaxation for each starting dimer.
+   - minima.traj or qn*.traj: Trajectory files storing intermediate geometries or identified local minima. These are often crucial for the restart functionality.
+   - hop.log: A log file detailing the steps, energies, acceptance criteria, etc., of the relaxation/search algorithm.
+   - Other potential files like images (.png) or intermediate structure files (.xyz).
 
 
