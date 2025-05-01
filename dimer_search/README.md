@@ -101,7 +101,7 @@ mh_config = {
     "Ediff0": 0.6,  # Initial energy difference criterion (e.g., in eV)
     "fmax": 0.1     # Force convergence criterion for geometry optimization (e.g., in eV/Angstrom)
 }
-
+```
 
 This initial block sets up two distinct relative placements (defined by rotation and translation) for creating dimer structures from the base molecule in mol.xyz. It also prepares
 configuration dictionaries (tblite_config, mh_config) that will only be used if the relaxation feature is turned on in the subsequent steps.
