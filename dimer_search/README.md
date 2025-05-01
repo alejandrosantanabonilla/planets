@@ -233,3 +233,9 @@ print("\nExample execution finished.")
     - totalsteps=240: This specifies the target total number of steps for the simulation. If Test Case 2 ran for 50 steps and the restart is successful, this run will perform approximately 190 additional steps (240 total - 50 previous = 190 new). If restart fails and it starts fresh, it will run for 240 steps.
     - output_filename_prefix="relax_run": This must be identical to the prefix used in the run you intend to continue (Test Case 2). This tells the processor which set of output files to look for and update.
 
+### Expected Output
+
+1. initial_assembly_for_restart.xyz: Contains the initial, unrelaxed dimer structures.
+2. Updated files starting with relax_run: If the restart was successful, the existing files (relax_run_minima.xyz, minima.traj, qn*.traj, hop.log, etc.) will be appended to or updated. The simulation history within these files will now reflect a total run length approaching the new totalsteps value (240). If the restart failed (e.g., files were missing), these files might be overwritten with a new run of 240 steps, or the process might error out depending on the library's implementation.
+3. The console output provides a hint about whether the restart likely succeeded based on the completion status.
+
