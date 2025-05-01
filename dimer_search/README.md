@@ -254,11 +254,33 @@ The restart_relax=True parameter enables the continuation of a potentially long 
 4. State Restoration: If valid and compatible restart files are found, the algorithm reads the necessary information to restore its internal state as closely as possible to where the previous run left off. This typically involves loading the last coordinates and retrieving the number of steps already completed.
 5. Continuation: The relaxation process then resumes from this restored state. It continues executing steps until the cumulative number of steps reaches the new totalsteps value specified in the current process_molecules call.
 
-## Why Use Restart?
+### Why Use Restart?
 
 1. Long Simulations: Break down simulations that might take days or weeks into manageable segments. Run for 12 hours, save state, restart.
 2. Resource Limits: Overcome wall-time limits on computing clusters. Run until the time limit, then submit a new job that restarts from the previous state.
 3. Interruption Recovery: Recover from unexpected interruptions like power outages, system crashes, or accidental process termination without losing all progress.
 4. Progressive Exploration: Run an initial short exploration, analyze the results (e.g., check energies in relax_run_minima.xyz), and then decide to continue the simulation for longer if needed.
+
+### Requirements for Successful Restart:
+
+1. A previous run using relax_molecule=True must have completed at least partially and successfully generated the necessary output/state files.
+2. The output_filename_prefix used in the restart call must exactly match the prefix used in the run you want to continue.
+3. The required state/output files from the previous run must be present in the directory where the restart script is executed.
+4. The relax_molecule=True flag must also be set in the restart call.
+5. Ideally, other simulation parameters (tblite_params, mh_params) should remain consistent, although some libraries might tolerate minor changes.
+
+## Running the Example
+
+1. Save the Python code provided into a file (e.g., run_dimer_tests.py).
+2. Create or obtain a valid molecular structure file named mol.xyz and place it in the same directory.
+3. Ensure your Python environment has numpy and the dimer_search library installed.
+4. Open a terminal or command prompt, navigate to the directory containing the script and mol.xyz.
+5. Execute the script: python run_dimer_tests.py
+
+
+Monitor the console output, which will indicate the progress through the three test cases. After execution, inspect the generated files (initial_assembly*.xyz, relax_run*.*) to see the results of each step. Compare 
+initial_assembly.xyz and initial_assembly_for_relax.xyz (they should be the same). Examine the relax_run files after Test Case 2 and see how they are potentially updated after Test Case 3.
+This tutorial provides a comprehensive guide to using the MoleculeProcessor for generating molecular assemblies, performing
+
 
 
